@@ -1,0 +1,27 @@
+# Virtual environment  
+venv/  
+.venv/  
+__pycache__/  
+
+# Environment variables  
+.env  
+
+# Python cache and logs  
+*.pyc  
+*.pyo  
+*.log  
+*.sqlite3  
+
+# Database files  
+*.db  
+
+# IDE/editor settings  
+.vscode/  
+.idea/  
+*.sublime-workspace  
+
+# MacOS system files  
+.DS_Store  
+
+# Windows system files  
+Thumbs.db  
