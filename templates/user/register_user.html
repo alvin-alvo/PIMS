@@ -4,16 +4,43 @@
 
 {% block content %}
     <h2>Register User</h2>
-    <form action="{{ url_for('auth_bp.register_user') }}" method="POST">
-        <label for="username">Full Name</label>
-        <input type="text" id="username" name="username" placeholder="Enter your full name" required>
+    <form method="POST" action="{{ url_for('auth_bp.register_user') }}">
 
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+        <label for="first_name">First Name:</label>
+        <input type="text" name="first_name" required>
 
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+        <label for="last_name">Last Name:</label>
+        <input type="text" name="last_name" required>
 
+        <label for="gender">Gender:</label>
+        <select name="gender" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <label for="email">Email:</label>
+        <input type="email" name="email" required>
+
+        <label for="phone">Phone:</label>
+        <input type="text" name="phone">
+
+        <label for="dob">Date of Birth:</label>
+        <input type="date" name="dob" required>
+
+        <label for="password">Password:</label>
+        <input type="password" name="password" required>
+
+        <label for="security_question">Security Question:</label>
+        <select id="security_question" name="security_question" required>
+            <option value="What is your pet’s name?">What is your pet’s name?</option>
+            <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
+            <option value="What is your first school's name?">What is your first school's name?</option>
+        </select>
+
+        <label for="answer">Answer:</label>
+        <input type="text" id="answer" name="answer" required>
+        
         <button type="submit">Register</button>
     </form>
 {% endblock %}

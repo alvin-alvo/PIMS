@@ -4,13 +4,23 @@
 
 {% block content %}
     <h2>Admin Login</h2>
-    <form action="{{ url_for('admin_bp.admin_login') }}" method="POST">
-        <label for="admin-email">Email</label>
-        <input type="email" id="admin-email" name="email" placeholder="Enter admin email" required>
+    
+    
+    <form action="{{ url_for('auth_bp.admin_login') }}" method="POST">
+        <label for="admin_id">Admin Id</label>
+        <input type="text" id="admin_id" name="admin_id" placeholder="Enter Admin Id" required>
 
-        <label for="admin-password">Password</label>
-        <input type="password" id="admin-password" name="password" placeholder="Enter admin password" required>
+        <label for="admin_password">Password</label>
+        <input type="password" id="admin_password" name="password" placeholder="Enter admin password" required>
 
         <button type="submit">Login</button>
+    
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <p class="{{ category }}">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
     </form>
 {% endblock %}

@@ -1,16 +1,16 @@
-from flask import Blueprint, jsonify, render_template
+from flask import Blueprint, jsonify, render_template, session, redirect, url_for, flash
 import db
 from models import User
 
 admin_bp = Blueprint('admin_bp', __name__, template_folder='../templates/admin')
 
-@admin_bp.route('/login', methods=['GET', 'POST'])
-def admin_login():
-    return render_template('admin/admin_login.html')
-
 @admin_bp.route('/dashboard')
 def admin_dashboard():
-    return render_template('admin/admin_dashboard.html')
+    if 'admin_id' not in session:
+        flash("You must be logged in to access this page.", "warning")
+        return redirect(url_for('auth_bp.admin_login'))
+    
+    return render_template('admin/admin_dashboard.html', admin_name=session.get('admin_name'))
 
 @admin_bp.route('/admin/users', methods=['GET'])
 def get_all_users():

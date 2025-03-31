@@ -17,6 +17,10 @@
 
 /* Navbar */
 .navbar {
+    position: fixed; /* Keeps it fixed at the top */
+    top: 0; /* Sticks to the top */
+    left: 0;
+    width: 100%; /* Full width */
     background: var(--primary-color);
     padding: 15px;
     display: flex;
@@ -27,14 +31,15 @@
     text-transform: uppercase;
     letter-spacing: 2px;
     box-shadow: 0px 5px 10px var(--shadow-color);
+    z-index: 1000; /* Ensures it stays above other elements */
 }
 
-/* Logo on the left */
-.logo {
-    margin-left: 15px;
+/* Adjust content to prevent overlap */
+.content {
+    margin-top: 80px; /* Adjust this value based on navbar height */
 }
 
-/* Sidebar (Always Visible) */
+/* Sidebar */
 .sidebar {
     position: fixed;
     left: 0;
@@ -90,20 +95,42 @@ form label {
     margin: 10px 0 5px;
 }
 
-input, button {
+input, button, select {
     width: 100%;
     padding: 12px;
     margin: 5px 0 15px;
     border-radius: var(--border-radius);
     border: 2px solid var(--primary-color);
     font-size: 16px;
-}
-
-input {
     background: var(--bg-color);
     color: var(--text-color);
 }
 
+/* Dropdown (Select) Styling */
+select {
+    appearance: none; /* Removes default OS styles */
+    cursor: pointer;
+    padding: 12px;
+    background: var(--bg-color);
+    border: 2px solid var(--primary-color);
+    font-size: 16px;
+    border-radius: var(--border-radius);
+    box-shadow: 2px 2px 8px var(--shadow-color);
+}
+
+/* Dropdown Arrow */
+select::-ms-expand {
+    display: none; /* Removes default arrow in IE */
+}
+
+/* Dropdown Hover & Focus */
+select:hover, select:focus {
+    border-color: var(--secondary-color);
+    background: #EAD7A2;
+    outline: none;
+}
+
+/* Button */
 button {
     background: var(--secondary-color);
     color: white;
