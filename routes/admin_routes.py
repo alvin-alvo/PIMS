@@ -1,16 +1,27 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, render_template
+import db
+from models import User
 
-admin_bp = Blueprint('admin_bp', __name__)
+admin_bp = Blueprint('admin_bp', __name__, template_folder='../templates/admin')
 
-@admin_bp.rout('/dashboard', methods=['GET'])
+@admin_bp.route('/login', methods=['GET', 'POST'])
+def admin_login():
+    return render_template('admin/admin_login.html')
+
+@admin_bp.route('/dashboard')
 def admin_dashboard():
-    return jsonify({"message": "Welcome to the Admin Dashboard!"})
+    return render_template('admin/admin_dashboard.html')
 
-@admin_bp.route('/users', methods=['GET'])
+@admin_bp.route('/admin/users', methods=['GET'])
 def get_all_users():
-    return jsonify({"messsage": "List all registered users"})
+    users = User.query.all()
+    return jsonify([{'user_id': u.user_id, 'name': f"{u.F_Name} {u.L_Name}"} for u in users])
 
-@admin_bp.route('/users/<user_id>', method=['DELETE'])
+@admin_bp.route('/admin/user/<user_id>', methods=['DELETE'])
 def delete_user(user_id):
-    return jsonify({"message": f"User {user_id} has been deleted by Admin"})
-
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify({'message': 'User deleted successfully'})

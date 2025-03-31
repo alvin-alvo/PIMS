@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>User Dashboard - PIS</title>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">PIS</div>
+    </nav>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <a href="{{ url_for('user_bp.user_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('user_bp.user_address') }}">Address</a>
+            <a href="{{ url_for('user_bp.user_contacts') }}">Contacts</a>
+            <a href="{{ url_for('user_bp.user_emg_contacts') }}">Emg Contacts</a>
+            <a href="{{ url_for('user_bp.user_education') }}">Education</a>
+            <a href="{{ url_for('user_bp.user_workexp') }}">Work Experience</a>
+            <a href="{{ url_for('user_bp.user_finance') }}">Finance</a>
+            <a href="{{ url_for('user_bp.user_onlineacc') }}">Online Accounts</a>
+            <a href="{{ url_for('auth_bp.user_logout') }}">Logout</a>
+        </div>
+
+        <!-- Main Content Block -->
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Contact: info@pisapp.com | &copy; 2025 PIS</p>
+    </footer>
+
+</body>
+</html>

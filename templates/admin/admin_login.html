@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Login - PIS{% endblock %}
+
+{% block content %}
+    <h2>Admin Login</h2>
+    <form action="{{ url_for('admin_bp.admin_login') }}" method="POST">
+        <label for="admin-email">Email</label>
+        <input type="email" id="admin-email" name="email" placeholder="Enter admin email" required>
+
+        <label for="admin-password">Password</label>
+        <input type="password" id="admin-password" name="password" placeholder="Enter admin password" required>
+
+        <button type="submit">Login</button>
+    </form>
+{% endblock %}

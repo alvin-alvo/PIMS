@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - PIS{% endblock %}
+
+{% block content %}
+    <h2>Register User</h2>
+    <form action="{{ url_for('auth_bp.register_user') }}" method="POST">
+        <label for="username">Full Name</label>
+        <input type="text" id="username" name="username" placeholder="Enter your full name" required>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+        <button type="submit">Register</button>
+    </form>
+{% endblock %}
