@@ -43,6 +43,7 @@ def update_dashboard():
 
         session['user'].update({'first_name': first_name, 'last_name': last_name, 'gender': gender, 'dob': dob})
         flash("Profile updated successfully!", "success")
+        session.modified = True
 
     except mysql.connector.Error as err:
         conn.rollback()
@@ -189,23 +190,55 @@ def update_education():
 
     degree = request.form.get('degree')
     institution = request.form.get('institution')
-    year = request.form.get('year')
+    field = request.form.get('field')
+    end = request.form.get('end')
+    start = request.form.get('start')
+
+
+    print(f"[DEBUG] Education Update Request - Degree: {degree}, Institution_Name: {institution}, Start_Date: {start}, End_Date: {end}, Field_Of_Study: {field} User ID: {user_id}")
 
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        cursor.execute("""
-            UPDATE education SET Degree = %s, Institution = %s, Year = %s WHERE user_id = %s
-        """, (degree, institution, year, user_id))
-        conn.commit()
+        # Check if the user has an education record
+        cursor.execute("SELECT COUNT(*) FROM education WHERE user_id = %s", (user_id,))
+        user_exists = cursor.fetchone()[0]
 
+        if user_exists == 0:
+            education_id = generate_short_uuid()  # Generate a unique ID for education entry
+            print(f"[INFO] No education record found for User ID: {user_id}. Inserting new record.")
+            cursor.execute("""
+                INSERT INTO education (education_id, user_id, Degree, Institution_Name, Start_Date, End_Date, Field_Of_Study)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """, (education_id, user_id, degree, institution, start, end, field))
+        else:
+            # If an education record exists, UPDATE it
+            cursor.execute("""
+                UPDATE education 
+                SET Degree = %s, Institution_Name = %s, Start_Date = %s, End_Date =  %s, Field_Of_Study = %s 
+                WHERE user_id = %s
+            """, (degree, institution, start, end, field, user_id))
+
+        conn.commit()
         flash("Education details updated successfully!", "success")
+        print(f"[INFO] Education updated successfully for User ID: {user_id}")
+
+        # Update session to reflect new education data
+        session['user'].update({
+            'degree': degree,
+            'institution': institution,
+            'field': field,
+            'start': start,
+            'end': end
+        })
+        session.modified = True
 
     except mysql.connector.Error as err:
         conn.rollback()
         flash("Error updating education!", "danger")
-        logging.error(f"Database error: {err}")
+        logging.error(f"[ERROR] Database error: {err}")
+        print(f"[ERROR] Database error: {err}")
 
     finally:
         cursor.close()
@@ -228,25 +261,62 @@ def update_workexp():
         flash("User not found!", "danger")
         return redirect(url_for('user_bp.user_workexp'))
 
-    company = request.form.get('company')
-    role = request.form.get('role')
-    years = request.form.get('years')
+    company = request.form.get('company', '').strip()
+    title = request.form.get('title', '').strip()
+    role = request.form.get('role', '').strip()
+    wstart = request.form.get('wstart', None)
+    wend = request.form.get('wend', None)
+
+    print(f"[DEBUG] Work Experience Update Request - Company: {company}, Job Title: {title}, Role: {role}, Start Date: {wstart}, End Date: {wend}, User ID: {user_id}")
+
+    # Validate that required fields are not empty
+    if not company or not title:
+        flash("Company Name and Job Title are required!", "danger")
+        print("[ERROR] Missing required fields: Company Name or Job Title.")
+        return redirect(url_for('user_bp.user_workexp'))
 
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        cursor.execute("""
-            UPDATE work_experience SET Company = %s, Role = %s, Years = %s WHERE user_id = %s
-        """, (company, role, years, user_id))
-        conn.commit()
+        # Check if the user has a work experience record
+        cursor.execute("SELECT COUNT(*) FROM work_experience WHERE user_id = %s", (user_id,))
+        user_exists = cursor.fetchone()[0]
 
+        if user_exists == 0:
+            experience_id = generate_short_uuid()  # Generate unique ID
+            print(f"[INFO] No work experience found for User ID: {user_id}. Inserting new record.")
+
+            cursor.execute("""
+                INSERT INTO work_experience (experience_id, user_id, Company_Name, Job_Title, Role, W_Start_Date, W_End_Date)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """, (experience_id, user_id, company, title, role or None, wstart or None, wend or None))
+        else:
+            print(f"[INFO] Updating work experience for User ID: {user_id}.")
+            cursor.execute("""
+                UPDATE work_experience 
+                SET Company_Name = %s, Job_Title = %s, Role = %s, W_Start_Date = %s, W_End_Date = %s
+                WHERE user_id = %s
+            """, (company, title, role or None, wstart or None, wend or None, user_id))
+
+        conn.commit()
         flash("Work experience updated successfully!", "success")
+        print(f"[INFO] Work experience updated successfully for User ID: {user_id}")
+
+        session['user'].update({
+            'company': company,
+            'title': title,
+            'role': role,
+            'wstart': wstart,
+            'wend': wend
+        })
+        session.modified = True
 
     except mysql.connector.Error as err:
         conn.rollback()
         flash("Error updating work experience!", "danger")
-        logging.error(f"Database error: {err}")
+        logging.error(f"[ERROR] Database error: {err}")
+        print(f"[ERROR] Database error: {err}")
 
     finally:
         cursor.close()
@@ -254,45 +324,6 @@ def update_workexp():
 
     return redirect(url_for('user_bp.user_workexp'))
 
-### ONLINE ACCOUNTS ###
-@user_bp.route('/online_acc')
-@login_required
-def user_onlineacc():
-    return render_template('user/user_onlineacc.html', user=session.get('user'))
-
-@user_bp.route('/update_onlineacc', methods=['POST'])
-@login_required
-def update_onlineacc():
-    user_id = session.get('user', {}).get('user_id')
-
-    if not user_id:
-        flash("User not found!", "danger")
-        return redirect(url_for('user_bp.user_onlineacc'))
-
-    platform = request.form.get('platform')
-    username = request.form.get('username')
-
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-
-        cursor.execute("""
-            UPDATE online_accounts SET Platform_Name = %s, UserName = %s WHERE user_id = %s
-        """, (platform, username, user_id))
-        conn.commit()
-
-        flash("Online account updated successfully!", "success")
-
-    except mysql.connector.Error as err:
-        conn.rollback()
-        flash("Error updating online accounts!", "danger")
-        logging.error(f"Database error: {err}")
-
-    finally:
-        cursor.close()
-        conn.close()
-
-    return redirect(url_for('user_bp.user_onlineacc'))
 
 @user_bp.route('/authentication')
 @login_required
@@ -309,25 +340,55 @@ def update_authentication():
         flash("User not found!", "danger")
         return redirect(url_for('user_bp.user_authentication'))
 
-    new_password = request.form.get('password')
+    password = request.form.get('password', '').strip()
+    securityq = request.form.get('securityq', "").strip()
+    answer = request.form.get('answer', "").strip()
+
+    # Validate input
+    if not password:
+        flash("Password cannot be empty!", "danger")
+        logging.error("[ERROR] Password field is empty.")
+        return redirect(url_for('user_bp.user_authentication'))
 
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        cursor.execute("UPDATE authentication SET Password = %s WHERE user_id = %s", (new_password, user_id))
+        # Check if the user already has an authentication record
+        cursor.execute("SELECT COUNT(*) FROM authentication WHERE user_id = %s", (user_id,))
+        user_exists = cursor.fetchone()[0]
+
+        if user_exists == 0:
+            # Insert new authentication record
+            auth_id = generate_short_uuid()  # Generate a unique auth_id
+            print(f"[INFO] No authentication record found for User ID: {user_id}. Inserting new record.")
+
+            cursor.execute("""
+                INSERT INTO authentication (auth_id, user_id, Password, Security_Question, Answer) 
+                VALUES (%s, %s, %s, %s, %s)
+            """, (auth_id, user_id, password, securityq, answer))
+        else:
+            # Update existing authentication record
+            cursor.execute("""
+                UPDATE authentication SET Password = %s, Security_Question = %s, Answer = %s  WHERE user_id = %s
+            """, (password, securityq, answer, user_id))
+
         conn.commit()
-
         flash("Authentication details updated successfully!", "success")
+        logging.info("[INFO] Password updated successfully!")
 
-        if 'user' in session:
-            session['user']['password'] = new_password  
-
-        logging.debug("Password updated successfully!")
+        
+        session['user'].update({
+            'password': password,
+            'securityq': answer,
+            'answer': answer,
+        })
+        session.modified = True
 
     except mysql.connector.Error as err:
+        conn.rollback()
         flash("Database error occurred!", "danger")
-        logging.error(f"Error: {err}")
+        logging.error(f"[ERROR] Database error: {err}")
 
     finally:
         cursor.close()

@@ -18,7 +18,7 @@
         </select>
 
         <label>Date of Birth:</label>
-        <input type="date" name="dob" value="{{ user.get(DOB) }}" required>
+        <input type="date" name="dob" value="{{ user.dob or '' }}" required>
 
 
         <button type="submit">Update</button>
