@@ -10,12 +10,6 @@
         <label>Last Name:</label>
         <input type="text" name="last_name" value="{{ user.last_name or '' }}" required>
 
-        <label>Email:</label>
-        <input type="email" name="email" value="{{ user.email or '' }}" required>
-
-        <label>Phone:</label>
-        <input type="text" name="phone" value="{{ user.phone or '' }}" required>
-
         <label>Gender:</label>
         <select name="gender">
             <option value="Male" {% if user.gender == 'Male' %}selected{% endif %}>Male</option>

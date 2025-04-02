@@ -4,7 +4,7 @@ from db import get_db_connection
 from models import User
 from auth import login_required
 import mysql.connector
-from routes.auth_routes import calculate_age
+from routes.auth_routes import calculate_age, generate_short_uuid
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] %(message)s')
@@ -118,19 +118,53 @@ def update_address():
     postal_code = request.form.get('postal_code')
     country = request.form.get('country')
 
+    print(f"[DEBUG] Address Update Request - House: {house}, Street: {street}, City: {city}, State: {state}, Postal Code: {postal_code}, Country: {country}, User ID: {user_id}")
+
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        cursor.execute(""" UPDATE address SET House_Name = %s, Street_Name = %s, City = %s, State = %s, Postal_Code = %s, Country = %s WHERE user_id = %s""", (house, street, city, state, postal_code, country user_id))
-        conn.commit()
+        # Check if the user has an address
+        cursor.execute("SELECT COUNT(*) FROM address WHERE user_id = %s", (user_id,))
+        user_exists = cursor.fetchone()[0]
 
+        if user_exists == 0:
+
+            address_id = generate_short_uuid()
+            # If no address exists, INSERT a new address
+            print(f"[INFO] No address found for User ID: {user_id}. Inserting new address.")
+            cursor.execute("""
+                INSERT INTO address (address_id, user_id, House_Name, Street_Name, City, State, Postal_Code, Country) 
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """, (address_id, user_id, house, street, city, state, postal_code, country))
+        else:
+            # If an address exists, UPDATE it
+            cursor.execute("""
+                UPDATE address 
+                SET House_Name = %s, Street_Name = %s, City = %s, State = %s, Postal_Code = %s, Country = %s 
+                WHERE user_id = %s
+            """, (house, street, city, state, postal_code, country, user_id))
+
+        conn.commit()
         flash("Address updated successfully!", "success")
+        print(f"[INFO] Address updated successfully for User ID: {user_id}")
+
+        # Update session to reflect new address data
+        session['user'].update({
+            'house': house,
+            'street': street,
+            'city': city,
+            'state': state,
+            'postal_code': postal_code,
+            'country': country
+        })
+        session.modified = True
 
     except mysql.connector.Error as err:
         conn.rollback()
         flash("Error updating address!", "danger")
-        logging.error(f"Database error: {err}")
+        logging.error(f"[ERROR] Database error: {err}")
+        print(f"[ERROR] Database error: {err}")
 
     finally:
         cursor.close()
