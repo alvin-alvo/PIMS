@@ -1,0 +1,39 @@
+{% extends "admin_home.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>User Management</h2>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.user_id }}</td>
+                    <td>{{ user.F_Name }} {{ user.L_Name }}</td>
+                    <td>{{ user.Email_id }}</td>
+                    <td>{{ user.Phone_No }}</td>
+                    <td>
+                        <form class="del-form"  method="POST" action="{{ url_for('admin_bp.get_all_users') }}" 
+                              onsubmit="return confirm('Are you sure you want to delete this user?');">
+                            <input type="hidden" name="delete_user" value="{{ user.user_id }}">
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

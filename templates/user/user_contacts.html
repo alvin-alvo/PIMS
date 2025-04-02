@@ -2,4 +2,13 @@
 
 {% block content %}
     <h2>Contacts</h2>
+    <form method="POST" action="{{ url_for('user_bp.update_contacts') }}">
+        <label>Email:</label>
+        <input type="email" name="email" value="{{ user.email or '' }}">
+
+        <label>Phone:</label>
+        <input type="text" name="phone" value="{{ user.phone or '' }}">
+
+        <button type="submit">Update</button>
+    </form>
 {% endblock %}

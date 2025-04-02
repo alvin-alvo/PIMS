@@ -1,8 +1,23 @@
-{% extends 'base.html' %}
+{% extends 'admin_home.html' %}
 
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
 <h1>Welcome to the Admin Dashboard</h1>
-<p>Manage users and view activity logs.</p>
+
+<!-- Admin Details Section -->
+<div class="admin-details">
+    <h3>Admin Details</h3>
+    
+    {% if admin %}
+        <p><strong>Name:</strong> {{ admin.admin_name }}</p>
+        <p><strong>Email:</strong> {{ admin.admin_email }}</p>
+        <p><strong>Phone:</strong> {{ admin.admin_phone }}</p>
+        <p><strong>Password:</strong> {{ admin.admin_password }}</p>
+
+    {% else %}
+        <p>No admin details found. Please log in.</p>
+    {% endif %}
+</div>
+
 {% endblock %}

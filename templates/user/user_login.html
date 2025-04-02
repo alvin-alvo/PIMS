@@ -4,7 +4,7 @@
 
 {% block content %}
     <h2>User Login</h2>
-    <form action="{{ url_for('auth_bp.login_user') }}" method="POST">
+    <form class="in"  action="{{ url_for('auth_bp.login_user') }}" method="POST">
         <label for="email">Email</label>
         <input type="email" id="email" name="email" placeholder="Enter your email" required>
 
@@ -12,5 +12,13 @@
         <input type="password" id="password" name="password" placeholder="Enter your password" required>
 
         <button type="submit">Login</button>
+        
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <p class="{{ category }}">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
     </form>
 {% endblock %}

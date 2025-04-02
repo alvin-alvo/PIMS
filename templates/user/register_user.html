@@ -4,7 +4,7 @@
 
 {% block content %}
     <h2>Register User</h2>
-    <form method="POST" action="{{ url_for('auth_bp.register_user') }}">
+    <form class="in" method="POST" action="{{ url_for('auth_bp.register_user') }}">
 
         <label for="first_name">First Name:</label>
         <input type="text" name="first_name" required>
@@ -42,5 +42,13 @@
         <input type="text" id="answer" name="answer" required>
         
         <button type="submit">Register</button>
+    
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <p class="{{ category }}">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
     </form>
 {% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'user_home.html' %}
+
+{% block content %}
+    <h2>Authentication</h2>
+    <form method="POST" action="{{ url_for('user_bp.update_authentication') }}">
+        <label>Password:</label>
+        <input type="text" name="password" value="{{ user.password or '' }}">
+
+        <label>Security Question:</label>
+        <select name="security_question">
+            <option value="What is your mother's maiden name?" {% if user.security_question == "What is your mother's maiden name?" %}selected{% endif %}>What is your mother's maiden name?</option>
+            <option value="What was the name of your first pet?" {% if user.security_question == "What was the name of your first pet?" %}selected{% endif %}>What was the name of your first pet?</option>
+            <option value="What was your childhood nickname?" {% if user.security_question == "What was your childhood nickname?" %}selected{% endif %}>What was your childhood nickname?</option>
+            <option value="In what city were you born?" {% if user.security_question == "In what city were you born?" %}selected{% endif %}>In what city were you born?</option>
+        </select>
+
+        <label>Security Answer:</label>
+        <input type="text" name="security_answer" value="{{ user.security_answer or '' }}" required>
+        
+        <button type="submit">Update</button>
+    </form>
+{% endblock %}

@@ -130,19 +130,85 @@ select:hover, select:focus {
     outline: none;
 }
 
-/* Button */
+/* General Button Styles */
 button {
     background: var(--secondary-color);
     color: white;
     font-weight: bold;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease-in-out;
+    box-shadow: 2px 2px 6px var(--shadow-color);
 }
 
+/* Hover Effect */
 button:hover {
     transform: translateY(-3px);
-    box-shadow: 3px 3px 10px var(--shadow-color);
+    background: var(--hover-color);
+    box-shadow: 3px 3px 12px var(--shadow-color);
 }
+
+/* Active/Click Effect */
+button:active {
+    transform: translateY(0);
+    box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Disabled Button */
+button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.del {
+    box-shadow: none !important;
+    background: transparent !important;
+    padding: 0;
+    margin: 0;
+    border: none;
+}
+
+
+/* Remove background and border from form */
+.del-form {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: inline-block !important;
+}
+
+/* Style the delete button */
+.del-btn {
+    background-color: var(--secondary-color) !important;
+    color: white !important;
+    border: none !important;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease-in-out;
+    box-shadow: 2px 2px 6px var(--shadow-color);
+}
+
+/* Hover Effect */
+.del-btn:hover {
+    background-color: var(--hover-color) !important;
+    transform: translateY(-3px);
+    box-shadow: 3px 3px 12px var(--shadow-color);
+}
+
+/* Active/Click Effect */
+.del-btn:active {
+    transform: translateY(0);
+    box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+
 
 /* Footer */
 .footer {
@@ -155,3 +221,69 @@ button:hover {
     padding: 10px;
     font-size: 14px;
 }
+
+.admin-details {
+    background: whitesmoke;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: 3px 3px 10px var(--shadow-color);
+    margin-top: 20px;
+    max-width: 400px;
+}
+
+
+/* Table Styling */
+.table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--bg-color);
+    border-radius: var(--border-radius);
+    box-shadow: 5px 5px 15px var(--shadow-color);
+    overflow: hidden;
+}
+
+/* Table Header */
+.table thead {
+    background: var(--primary-color);
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+
+/* Header Cells */
+.table th {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 3px solid var(--secondary-color);
+}
+
+/* Table Body */
+.table tbody {
+    background: transparent;
+}
+
+/* Table Rows */
+.table tbody tr {
+    transition: background 0.3s ease-in-out;
+}
+
+.table tbody tr:nth-child(odd) {
+    background: #F8E8D8; /* Light retro beige */
+}
+
+.table tbody tr:nth-child(even) {
+    background: #EAD7A2; /* Warm toned accent */
+}
+
+.table tbody tr:hover {
+    background: #D9B08C; /* Subtle hover effect */
+}
+
+/* Table Cells */
+.table td {
+    padding: 12px;
+    border-bottom: 2px solid var(--secondary-color);
+}
+

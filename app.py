@@ -6,9 +6,11 @@ import os
 
 from db import get_db_connection
 
-
+ 
 app = Flask(__name__, template_folder='templates')
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+app.config['SESSION_TYPE'] = 'filesystem'  
+app.config['SESSION_PERMANENT'] = False
 
 get_db_connection()
 

@@ -2,4 +2,22 @@
 
 {% block content %}
     <h2>Work Experience</h2>
+    <form method="POST" action="{{ url_for('user_bp.update_workexp') }}">
+        <label>Company Name:</label>
+        <input type="text" name="company" value="{{ user.company or '' }}">
+
+        <label>Job Title:</label>
+        <input type="text" name="title" value="{{ user.title or '' }}">
+
+        <label>Role:</label>
+        <input type="text" name="role" value="{{ user.role or '' }}">
+
+        <label>Start Date:</label>
+        <input type="date" name="wstart" value="{{ user.wstart or '' }}">
+
+        <label>End Date:</label>
+        <input type="date" name="wend" value="{{ user.wend or '' }}">
+
+        <button type="submit">Update</button>
+    </form>
 {% endblock %}

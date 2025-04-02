@@ -1,5 +1,28 @@
 {% extends 'user_home.html' %}
 
 {% block content %}
-    <h2>Address</h2>
+    <h2>Update Address</h2>
+    <form method="POST" action="{{ url_for('user_bp.update_address') }}">
+        
+        <label>House:</label>
+        <input type="text" name="house" value="{{ user.house or '' }}" required>
+
+
+        <label>Street:</label>
+        <input type="text" name="street" value="{{ user.street or '' }}" required>
+
+        <label>City:</label>
+        <input type="text" name="city" value="{{ user.city or '' }}" required>
+
+        <label>State:</label>
+        <input type="text" name="state" value="{{ user.state or '' }}" required>
+
+        <label>Postal Code:</label>
+        <input type="text" name="postal_code" value="{{ user.postal_code or '' }}" required>
+
+        <label>Country:</label>
+        <input type="text" name="country" value="{{ user.country or '' }}" required>
+
+        <button type="submit">Update</button>
+    </form>
 {% endblock %}

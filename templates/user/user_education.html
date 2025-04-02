@@ -2,4 +2,22 @@
 
 {% block content %}
     <h2>Education</h2>
+    <form method="POST" action="{{ url_for('user_bp.update_education') }}">
+        <label>Institution Name:</label>
+        <input type="text" name="institution" value="{{ user.institution or '' }}">
+
+        <label>Field of Study:</label>
+        <input type="text" name="field" value="{{ user.field or '' }}">
+
+        <label>Degree:</label>
+        <input type="text" name="degree" value="{{ user.degree or '' }}">
+
+        <label>Start Date:</label>
+        <input type="date" name="start" value="{{ user.start or '' }}">
+
+        <label>End Date:</label>
+        <input type="date" name="end" value="{{ user.end or '' }}">
+
+        <button type="submit">Update</button>
+    </form>
 {% endblock %}

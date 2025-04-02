@@ -2,5 +2,31 @@
 
 {% block content %}
     <h2>Dashboard</h2>
-    <p>Welcome to your dashboard</p>
+    <form method="POST" action="{{ url_for('user_bp.update_dashboard') }}">
+        
+        <label>First Name:</label>
+        <input type="text" name="first_name" value="{{ user.first_name or '' }}" required>
+
+        <label>Last Name:</label>
+        <input type="text" name="last_name" value="{{ user.last_name or '' }}" required>
+
+        <label>Email:</label>
+        <input type="email" name="email" value="{{ user.email or '' }}" required>
+
+        <label>Phone:</label>
+        <input type="text" name="phone" value="{{ user.phone or '' }}" required>
+
+        <label>Gender:</label>
+        <select name="gender">
+            <option value="Male" {% if user.gender == 'Male' %}selected{% endif %}>Male</option>
+            <option value="Female" {% if user.gender == 'Female' %}selected{% endif %}>Female</option>
+            <option value="Other" {% if user.gender == 'Other' %}selected{% endif %}>Other</option>
+        </select>
+
+        <label>Date of Birth:</label>
+        <input type="date" name="dob" value="{{ user.get(DOB) }}" required>
+
+
+        <button type="submit">Update</button>
+    </form>
 {% endblock %}
