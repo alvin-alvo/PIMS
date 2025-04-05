@@ -1,4 +1,4 @@
-:root {
+:root{
     --primary-color: #3B3A36;  /* Dark muted brown */
     --secondary-color: #B85C38; /* Retro deep red */
     --bg-color: #F4E9CD; /* Warm vintage paper color */
@@ -214,12 +214,16 @@ button:disabled {
 .footer {
     position: fixed;
     bottom: 0;
-    width: 100%;
+    left: 0; /* Add this to anchor to left edge */
+    right: 0; /* Add this to anchor to right edge */
+    width: 100%; /* Changed from '100' to '100%' */
     background: var(--primary-color);
     color: white;
     text-align: center;
     padding: 10px;
     font-size: 14px;
+    z-index: 1000; /* Ensure footer stays above other content */
+    box-shadow: 0 -2px 10px var(--shadow-color); /* Optional: adds shadow at top */
 }
 
 .admin-details {
@@ -285,5 +289,143 @@ button:disabled {
 .table td {
     padding: 12px;
     border-bottom: 2px solid var(--secondary-color);
+}
+
+
+/* ==================== */
+/* RESPONSIVE ADJUSTMENTS */
+/* ==================== */
+
+@media (max-width: 1024px) {
+    /* Tablet/Laptop transition */
+    .sidebar {
+        width: 200px;
+    }
+    .content {
+        margin-left: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Tablet styles */
+    .sidebar {
+        width: 180px;
+        padding-top: 15px;
+    }
+    .sidebar a {
+        padding: 12px;
+        font-size: 16px;
+    }
+    .content {
+        margin-left: 180px;
+        padding: 30px;
+    }
+    form {
+        max-width: 350px;
+    }
+}
+
+@media (max-width: 576px) {
+    /* Mobile styles */
+    .navbar {
+        font-size: 22px;
+        padding: 12px;
+        position: relative; /* Makes navbar static on mobile */
+    }
+    
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        top: 0;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 10px 0;
+    }
+    
+    .sidebar a {
+        padding: 10px 15px;
+        border-bottom: none;
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .content {
+        margin: 20px 0 0 0;
+        padding: 20px;
+    }
+    
+    form {
+        max-width: 100%;
+    }
+    
+    /* Table adjustments */
+    .table {
+        display: block;
+        overflow-x: auto;
+    }
+    
+    .table thead {
+        display: none;
+    }
+    
+    .table tbody tr {
+        display: block;
+        margin-bottom: 15px;
+        border-radius: var(--border-radius);
+        box-shadow: 3px 3px 8px var(--shadow-color);
+    }
+    
+    .table td {
+        display: block;
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+        border-bottom: 1px solid var(--secondary-color);
+    }
+    
+    .table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 15px;
+        width: 45%;
+        padding-right: 10px;
+        font-weight: bold;
+        text-align: left;
+        color: var(--primary-color);
+    }
+    
+    .footer {
+        position: relative;
+    }
+}
+
+@media (max-width: 400px) {
+    /* Small mobile adjustments */
+    .sidebar a {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+    
+    .content {
+        padding: 15px;
+    }
+    
+    input, button, select {
+        padding: 10px;
+    }
+}
+
+/* Maintain theme colors in responsive mode */
+@media (max-width: 576px) {
+    .table tbody tr:nth-child(odd),
+    .table tbody tr:nth-child(even) {
+        background: #F8E8D8; /* Uniform color for mobile */
+    }
+    
+    .table tbody tr:hover {
+        background: #D9B08C;
+    }
 }
 

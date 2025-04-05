@@ -1,10 +1,10 @@
 import logging
-from flask import Blueprint, request, jsonify, render_template, session, flash, redirect, url_for
+from flask import Blueprint, request, render_template, session, flash, redirect, url_for
 from db import get_db_connection
-from models import User
 from auth import login_required
 import mysql.connector
-from routes.auth_routes import calculate_age, generate_short_uuid
+from datetime import datetime
+from routes.auth_routes import generate_short_uuid
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] %(message)s')
@@ -194,6 +194,14 @@ def update_education():
     end = request.form.get('end')
     start = request.form.get('start')
 
+    try:
+        # Convert dates to MySQL format (YYYY-MM-DD)
+        start_date = datetime.strptime(start, "%Y-%m-%d").date() if start else None
+        end_date = datetime.strptime(end, "%Y-%m-%d").date() if end else None
+    except ValueError:
+        flash("Invalid date format!", "danger")
+        return redirect(url_for('user_bp.user_education'))
+
 
     print(f"[DEBUG] Education Update Request - Degree: {degree}, Institution_Name: {institution}, Start_Date: {start}, End_Date: {end}, Field_Of_Study: {field} User ID: {user_id}")
 
@@ -224,13 +232,15 @@ def update_education():
         flash("Education details updated successfully!", "success")
         print(f"[INFO] Education updated successfully for User ID: {user_id}")
 
+        
+
         # Update session to reflect new education data
         session['user'].update({
             'degree': degree,
             'institution': institution,
             'field': field,
-            'start': start,
-            'end': end
+            'start': str(start_date),
+            'end': str(end_date)
         })
         session.modified = True
 
@@ -266,6 +276,13 @@ def update_workexp():
     role = request.form.get('role', '').strip()
     wstart = request.form.get('wstart', None)
     wend = request.form.get('wend', None)
+
+    try:
+        wstart_date = datetime.strptime(wstart, "%Y-%m-%d").date() if wstart else None
+        wend_date = datetime.strptime(wend, "%Y-%m-%d").date() if wend else None
+    except ValueError:
+        flash("Invalid date format!", "danger")
+        return redirect(url_for('user_bp.user_workexp'))
 
     print(f"[DEBUG] Work Experience Update Request - Company: {company}, Job Title: {title}, Role: {role}, Start Date: {wstart}, End Date: {wend}, User ID: {user_id}")
 
@@ -303,12 +320,14 @@ def update_workexp():
         flash("Work experience updated successfully!", "success")
         print(f"[INFO] Work experience updated successfully for User ID: {user_id}")
 
+        
+
         session['user'].update({
             'company': company,
             'title': title,
             'role': role,
-            'wstart': wstart,
-            'wend': wend
+            'wstart': str(wstart_date),
+            'wend': str(wend_date)
         })
         session.modified = True
 

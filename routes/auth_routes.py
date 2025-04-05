@@ -1,7 +1,5 @@
 from flask import Blueprint, request, render_template, redirect, url_for, flash, session
-import os
 from db import get_db_connection
-from models import User, Authentication
 from datetime import datetime
 import mysql.connector
 import uuid
@@ -12,10 +10,10 @@ from datetime import datetime
 
 def calculate_age(dob):
     if not dob:
-        return None  # Handle missing DOB
+        return None  
     
     try:
-        birth_date = datetime.strptime(dob, "%Y-%m-%d")  # Ensure correct format
+        birth_date = datetime.strptime(dob, "%Y-%m-%d")  
         today = datetime.today()
         age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
         return age
@@ -48,6 +46,12 @@ def register_user():
                 password = request.form['password']
                 security_question = request.form["security_question"]
                 answer = request.form["answer"]
+
+                try:
+                    dob = datetime.strptime(dob, "%Y-%m-%d").strftime("%Y-%m-%d")
+                except ValueError:
+                    flash("Invalid date format!", "danger")
+                    return render_template('user/register_user.html')
                 
                 age = calculate_age(dob)
                 admin_id = get_admin_id()
@@ -93,14 +97,13 @@ def login_user():
             conn = get_db_connection()
             cursor = conn.cursor(dictionary=True)
 
-            # ✅ Debug SQL query execution
+            # Debug SQL query execution
             print("[DEBUG] Executing Login Query...")
 
             cursor.execute("""
                 SELECT u.user_id, u.F_Name, u.L_Name, c.Email_id, c.Phone_No, u.Gender, u.DOB, u.Age, 
                     e.Institution_Name, e.Field_Of_Study, e.Start_Date, e.End_Date, e.degree,
                     w.Job_Title, w.Role, w.Company_Name, w.W_Start_Date, w.W_End_Date,
-                    o.Platform_Name, o.UserName, o.Profile_Url,
                     a.Security_Question, a.Answer, a.Password,
                     ad.Street_Name, ad.House_Name, ad.City, ad.State, ad.Postal_Code, ad.Country
                 FROM authentication a
@@ -109,8 +112,6 @@ def login_user():
                 LEFT JOIN address ad ON u.user_id = ad.user_id
                 LEFT JOIN education e ON u.user_id = e.user_id
                 LEFT JOIN work_experience w ON u.user_id = w.user_id
-                LEFT JOIN finance f ON u.user_id = f.user_id
-                LEFT JOIN online_accounts o ON u.user_id = o.user_id
                 WHERE c.Email_id = %s AND a.Password = %s
             """, (email, password))
             
@@ -130,7 +131,10 @@ def login_user():
 
             print("[DEBUG] User authenticated! Storing session data...")
 
-            # ✅ Store user details in session
+            if user['DOB']:
+                formatted_dob = user['DOB'].strftime("%Y-%m-%d")
+
+            #  Store user details in session
             session['user'] = {
                 'user_id': user['user_id'],
                 'first_name': user.get('F_Name', ""),
@@ -138,7 +142,7 @@ def login_user():
                 'email': user.get('Email_id', ""),
                 'phone': user.get('Phone_No', ""),
                 'gender': user.get('Gender', ""),
-                'dob': user.get('DOB', ""),
+                'dob': formatted_dob,
                 'age': user.get('Age', ""),
                 'institution': user.get('Institution_Name',""),
                 'field': user.get('Field_Of_Study',""),

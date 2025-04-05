@@ -1,6 +1,5 @@
-from flask import Blueprint, request, jsonify, render_template, session, redirect, url_for, flash
+from flask import Blueprint, request, render_template, session, redirect, url_for, flash
 from db import get_db_connection
-from models import User, Contact, Authentication
 from auth import admin_required
 import mysql.connector
 
@@ -13,12 +12,12 @@ def admin_dashboard():
         flash("You must be logged in to access this page.", "warning")
         return redirect(url_for('auth_bp.admin_login'))
     
-     # Fetch admin details from session
+     
     admin = {
         "admin_name": session.get("admin_name"),
         "admin_email": session.get("admin_email"),
         "admin_phone": session.get("admin_phone"),
-        "admin_password": session.get("admin_password"),  # Avoid displaying passwords in production
+        "admin_password": session.get("admin_password"),  
     }
     return render_template('admin/admin_dashboard.html', admin=admin)
 
@@ -34,18 +33,16 @@ def get_all_users():
             conn = get_db_connection()
             cursor = conn.cursor()
 
-            # 1️⃣ Disable foreign key checks (temporarily)
+            # Disable foreign key checks (temporarily)
             cursor.execute("SET FOREIGN_KEY_CHECKS = 0")
 
-            # 2️⃣ Delete from ALL related tables (order matters!)
+            #  Delete from ALL related tables (order matters!)
             tables_to_clean = [
                 "authentication",
                 "contact",
                 "address",
                 "education",
                 "work_experience",
-                "finance",
-                "online_accounts",
                 "user"
             ]
 
@@ -53,7 +50,7 @@ def get_all_users():
                 cursor.execute(f"DELETE FROM {table} WHERE user_id = %s", (user_id,))
                 print(f"Deleted from {table}: {cursor.rowcount} rows")
 
-            # 3️⃣ Re-enable foreign key checks
+            #  Re-enable foreign key checks
             cursor.execute("SET FOREIGN_KEY_CHECKS = 1")
             
             conn.commit()
@@ -64,7 +61,7 @@ def get_all_users():
                 conn.rollback()
             flash(f"Deletion failed: {err}", "danger")
             print(f"SQL Error: {err}")
-            return redirect(url_for('admin_bp.get_all_users'))  # Return early on error
+            return redirect(url_for('admin_bp.get_all_users'))  
 
         finally:
             if cursor:
