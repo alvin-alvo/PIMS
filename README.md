@@ -60,7 +60,7 @@ Each table is linked via the `user_id` foreign key.
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/alvin-alvo/PIMS.git
-cd personal-information-system
+cd PIMS
 ```
 
 ### 2. Create and Activate a Virtual Environment
