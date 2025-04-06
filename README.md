@@ -89,7 +89,7 @@ conn = mysql.connector.connect(
     host='localhost',
     user='your_mysql_user',
     password='your_mysql_password',
-    database='pis'
+    database='personalinformationsystem'
 )
 ```
 
